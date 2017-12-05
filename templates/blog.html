@@ -11,13 +11,18 @@
 		<h2>Welcome to your blog</h2>
 		<form class="form-border" action="/add_post" method="POST">
 			<div class="title wrapper">
-				<input id="input-title" type="text" name="title" placeholder="Title"></input>
+				<input id="input-title" type="text" name="title" placeholder="Title" required=""></input>
 			</div>
 
 			<div class="title wrapper">
-				<textarea id="input-post" name="post"></textarea>
+				<textarea id="input-post" name="post" required=""></textarea>
 			</div>
 			<div  class="description wrapper">
+				<input type="text" name="id" value="" id="input-id" style="display: none;">
+				<input type="text" name="type" value="POST" id="input-type" style="display: none;">
+				<button onclick="window.location = '{{ url_for('landing_page')}}'"
+					type="button" id="input-cancel" style="display: none;">CANCEL</button>
+				<button type="submit" id="input-update" style="display: none;">UPDATE</button>
 				<input type="submit" id="input-submit" value="POST"></input>
 			</div>
 		</form>
@@ -25,7 +30,21 @@
 		{% for post in posts %}
 			<div class="blog-border">
 				<div class="title">
-					<div> {{ post.title }} </div>
+					<form class="form-title" action="/delete_post/{{post._id}}" method="POST">
+						<div> {{ post.title }}
+							<button type="button" id="edit-btn"
+								onclick="
+									console.log('edit!!');
+									document.getElementById('input-title').value = '{{post.title}}';
+									document.getElementById('input-post').value = '{{post.post}}';
+									document.getElementById('input-id').value = '{{post._id}}';
+									document.getElementById('input-type').value = 'PATCH';
+									document.getElementById('input-cancel').style = '';
+									document.getElementById('input-update').style = '';
+									document.getElementById('input-submit').style = 'display: none;';" style="position: absolute; right: 90px">Edit</button>
+							<button type="submit" id="delete-submit" onclick="console.log('delete!!');" style="position: absolute; right: 30px">Delete</button>
+						</div>
+					</form>
 				</div>
 				<div class="post">
 					<div> {{ post.post }} </div>

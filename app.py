@@ -29,8 +29,32 @@ def landing_page():
 
 @app.route('/add_post', methods=['POST'])
 def add_post():
+    if request.form['type'] == 'POST':
+        new()
+    else:
+        item_doc = {
+            '$set': {
+                'title': request.form['title'],
+                'post': request.form['post']
+            }
+        }
+        db.blogpostDB.update_one({'_id':ObjectId(request.form['id'])}, item_doc, upsert=False)
 
-    new()
+    return redirect(url_for('landing_page'))
+
+
+
+@app.route('/edit_post/<_id>', methods=['POST'])
+def edit_post(_id):
+
+    update(_id)
+    return redirect(url_for('landing_page'))
+
+
+@app.route('/delete_post/<_id>', methods=['POST'])
+def delete_post(_id):
+    db.blogpostDB.delete_one({'_id':ObjectId(_id)})
+
     return redirect(url_for('landing_page'))
 
 
@@ -66,6 +90,25 @@ def new():
     posts = [post for post in _posts]
 
     return JSONEncoder().encode(posts[-1])
+
+
+# @app.route('/update/<_id>', methods=['POST'])
+# def update(_id):
+
+#     item_doc = {
+#         'title': request.form['title'],
+#         'post': request.form['post']
+#     }
+#     db.blogpostDB.update({'_id':_id}, item_doc)
+
+#     _posts = db.blogpostDB.find()
+#     posts = [post for post in _posts]
+
+#     return JSONEncoder().encode(posts[-1])
+
+
+# @app.route('/delete/<_id>', methods=['DELETE'])
+# def delete(_id):
 
 
 ### Insert function here ###
